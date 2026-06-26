@@ -1,0 +1,207 @@
+{
+  "uuid": "sp-spdci-v1",
+  "lastMigration": 32,
+  "name": "SP-SPDCI-v1",
+  "port": 3004,
+  "hostname": "0.0.0.0",
+
+  "data": [
+    {
+      "uuid": "members",
+      "name": "members",
+      "documents": [
+        {
+          "@id": "https://example.org/ess_person/847951632",
+          "@type": "spdci:member",
+          "member_identifier": [
+            {
+              "@type": "Identifier",
+              "identifier_type": "UIN",
+              "identifier_value": "42343545654"
+            }
+          ],
+          "demographic_info": {
+            "name": {
+              "given_name": "Alice",
+              "surname": "Smith"
+            },
+            "sex": "female",
+            "birth_date": "1985-05-20"
+          },
+          "employment_status": "employed",
+          "occupation": "teacher",
+          "education_level": "bachelor"
+        },
+        {
+          "@id": "https://example.org/ess_person/847951633",
+          "@type": "spdci:member",
+          "member_identifier": [
+            {
+              "@type": "Identifier",
+              "identifier_type": "UIN",
+              "identifier_value": "55555555555"
+            }
+          ],
+          "demographic_info": {
+            "name": {
+              "given_name": "John",
+              "surname": "Brown"
+            },
+            "sex": "male",
+            "birth_date": "1990-10-15"
+          },
+          "employment_status": "unemployed",
+          "occupation": "construction",
+          "education_level": "secondary"
+        }
+      ]
+    }
+  ],
+
+  "routes": [
+
+    {
+      "uuid": "search-init",
+      "method": "post",
+      "endpoint": "sp/search",
+      "documentation": "sp Async Search",
+
+      "responses": [
+        {
+          "uuid": "search-ack",
+          "statusCode": 200,
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"message\": {\n    \"ack_status\": \"ACK\",\n    \"correlation_id\": \"CORR-{{body.message.transaction_id}}\",\n    \"timestamp\": \"{{now}}\"\n  }\n}"
+        }
+      ]
+    },
+
+    {
+      "uuid": "sync-search",
+      "method": "post",
+      "endpoint": "sp/sync/search",
+      "documentation": "SP Sync Search returning real dataset",
+
+      "request": {
+        "rules": [
+          {
+            "key": "body.message.search_request[0]",
+            "operator": "exists"
+          }
+        ]
+      },
+
+      "responses": [
+        {
+          "uuid": "sync-response",
+          "statusCode": 200,
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"signature\": \"mock-signature\",\n  \"header\": {\n    \"version\": \"1.0.0\",\n    \"message_id\": \"789\",\n    \"message_ts\": \"{{now}}\",\n    \"action\": \"on-search\",\n    \"status\": \"rcvd\",\n    \"total_count\": {{data 'members' | length}},\n    \"completed_count\": {{data 'members' | length}},\n    \"sender_id\": \"ess.example.org\",\n    \"receiver_id\": \"spmis.example.org\",\n    \"is_msg_encrypted\": false,\n    \"meta\": {}\n  },\n  \"message\": {\n    \"transaction_id\": \"{{body.message.transaction_id}}\",\n    \"correlation_id\": \"CORR-{{body.message.transaction_id}}\",\n    \"search_response\": [\n      {\n        \"reference_id\": \"{{body.message.search_request.[0].reference_id}}\",\n        \"timestamp\": \"{{now}}\",\n        \"status\": \"rcvd\",\n        \"data\": {\n          \"version\": \"1.0.0\",\n          \"reg_type\": \"ns:org:RegistryType:ESS\",\n          \"reg_record_type\": \"Member\",\n          \"reg_records\": {{data 'members'}}\n        }\n      }\n    ]\n  }\n}"
+        }
+      ]
+    },
+
+    {
+      "uuid": "on-search",
+      "method": "post",
+      "endpoint": "sp/on-search",
+      "documentation": "sp receives search_response",
+
+      "responses": [
+        {
+          "uuid": "on-search-res",
+          "statusCode": 200,
+          "body": "{\n  \"message\": {\n    \"ack_status\": \"ACK\",\n    \"correlation_id\": \"{{body.message.correlation_id}}\",\n    \"timestamp\": \"{{now}}\"\n  }\n}"
+        }
+      ]
+    },
+
+    {
+      "uuid": "txn-status",
+      "method": "post",
+      "endpoint": "sp/sync/search",
+      "responses": [
+        {
+          "uuid": "txn-status-res",
+          "statusCode": 200,
+          "body": "{\n  \"message\": {\n    \"txn_status\": \"completed\",\n    \"transaction_id\": \"{{body.message.transaction_id}}\"\n  }\n}"
+        }
+      ]
+    },
+
+    {
+      "uuid": "subscribe",
+      "method": "post",
+      "endpoint": "sp/subscribe",
+      "responses": [
+        {
+          "uuid": "subscribe-res",
+          "statusCode": 200,
+          "body": "{\n  \"message\": {\n    \"ack_status\": \"ACK\"\n  }\n}"
+        }
+      ]
+    },
+
+    {
+      "uuid": "unsubscribe",
+      "method": "post",
+      "endpoint": "sp/unsubscribe",
+      "responses": [
+        {
+          "uuid": "unsubscribe-res",
+          "statusCode": 200,
+          "body": "{\n  \"message\": {\n    \"ack_status\": \"ACK\"\n  }\n}"
+        }
+      ]
+    },
+
+    {
+      "uuid": "notify",
+      "method": "post",
+      "endpoint": "sp/notify",
+      "responses": [
+        {
+          "uuid": "notify-res",
+          "statusCode": 200,
+          "body": "{\n  \"message\": {\n    \"ack_status\": \"ACK\"\n  }\n}"
+        }
+      ]
+    },
+    
+    {
+      "uuid": "sync-check-enrollment",
+      "method": "post",
+      "endpoint": "sp/sync/check-enrollment",
+      "documentation": "sp Sync Enrollment Check",
+
+      "request": {
+        "rules": [
+          {
+            "key": "body.header.action",
+            "operator": "equals",
+            "value": "enrollementstatus"
+          },
+          {
+            "key": "body.message.enrolled_criteria.query_type",
+            "operator": "exists"
+          }
+        ]
+      },
+
+      "responses": [
+        {
+          "uuid": "check-enrollment-response",
+          "statusCode": 200,
+          "headers": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"signature\": \"mock-signature\",\n  \"header\": {\n    \"version\": \"1.0.0\",\n    \"message_id\": \"789\",\n    \"message_ts\": \"{{now}}\",\n    \"action\": \"txn-on-status\",\n    \"status\": \"rcvd\",\n    \"status_reason_code\": \"\",\n    \"status_reason_message\": \"\",\n    \"total_count\": 1,\n    \"completed_count\": 1,\n    \"sender_id\": \"ess.example.org\",\n    \"receiver_id\": \"spmis.example.org\",\n    \"is_msg_encrypted\": false,\n    \"meta\": {}\n  },\n  \"message\": {\n    \"transaction_id\": \"{{body.message.transaction_id}}\",\n    \"correlation_id\": \"CORR-{{body.message.transaction_id}}\",\n    \"enrolled_response\": [\n      {\n        \"reference_id\": \"{{body.message.enrolled_criteria.query.person_identifier.eq}}\",\n        \"timestamp\": \"{{now}}\",\n        \"status\": \"rcvd\",\n        \"enrolled_status\": \"Active\"\n      }\n    ]\n  }\n}"
+        }
+      ]
+    }
+  ]
+}

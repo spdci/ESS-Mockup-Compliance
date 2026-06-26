@@ -1,0 +1,29 @@
+version: "3.3"
+
+services:
+
+  ess-mock:
+    image: mockoon-base
+    build:
+      context: .
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./mockoon-ess.json:/mockoon-ess.json
+    command: >
+      mockoon-cli start
+      --hostname 0.0.0.0
+      --data /mockoon-ess.json
+
+  sp-mock:
+    image: mockoon-base
+    build:
+      context: .
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./mockoon-sp.json:/mockoon-sp.json
+    command: >
+      mockoon-cli start
+      --hostname 0.0.0.0
+      --data /mockoon-sp.json
