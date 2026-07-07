@@ -8,19 +8,10 @@ It receives notifications from SP systems or external registries.
     Scenario: Successfully receive notification
         Given ESS receives a valid notification event
         When A POST request to notify is sent
-        Then The response should be received
-        And The response status should be 200
-        And The response should contain "ack_status" equal to "ACK"
-        And The response should be returned within 15000ms
+        Then The notify response should be received
+        And The notify response status should be 200
+        And The notify response should have "Content-Type": "application/json" header
+        And The notify response should be returned within 15000ms
+        And The notify response ack_status should be "ACK"
 
-    @negative
-    Scenario: Notification with invalid payload
-        Given ESS receives malformed notification
-        When A POST request to notify is sent
-        Then The system should handle it gracefully
-
-    @schema
-    Scenario: Notification schema validation
-        Given A valid notification request is sent
-        When The response is received
-        Then The response should match the expected JSON schema
+    

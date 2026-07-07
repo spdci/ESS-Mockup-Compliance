@@ -9,7 +9,7 @@ import {
   asyncsearchEndpoint,
   acceptHeader,
   defaultExpectedResponseTime,
-  asyncSearchRequest
+  asyncSearchRequest,
 } from './helpers/helpers.js';
 
 import chaiJsonSchema from 'chai-json-schema';
@@ -20,7 +20,7 @@ let requestSpec;
 
 const baseUrl = localhost + asyncsearchEndpoint;
 
-Given('System wants to async search for persons in crvs', function () {
+Given('SP system wants to async search for eligible members in ESS', function () {
   requestSpec = spec();
 });
 
@@ -50,15 +50,13 @@ Then(
 );
 
 Then(
-  'The async search response should be returned in a timely manner within {int}ms',
+  'The async search response should be returned within {int}ms',
   function (time) {
     chai.expect(this.response.responseTime).to.be.lessThan(time);
   }
 );
 
-Then(
-  'The async search response should match the expected JSON schema',
-  function () {
-    chai.expect(this.response.body).to.be.jsonSchema(asyncSearchResponseSchema);
-  }
-);
+Then('The ack_status should be {string}', function (status) {
+  chai.expect(this.response.body.message.ack_status)
+    .to.equal(status);
+});

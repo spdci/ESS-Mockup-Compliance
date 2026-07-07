@@ -2,7 +2,7 @@
 // Environment
 // =========================================
 
-export const localhost = process.env.API_URL || "http://localhost:3003";
+export const localhost = "http://127.0.0.1:3003";
 
 export const defaultExpectedResponseTime = 15000;
 
@@ -19,38 +19,38 @@ export const acceptHeader = {
 // ESS Endpoints
 // =========================================
 
-export const asyncsearchEndpoint = "/registry/search";
+export const asyncsearchEndpoint = "/ess/search";
 
-export const syncSearchEndpoint = "/registry/sync/search";
+export const syncSearchEndpoint = "/ess/sync/search";
 
-export const onSearchEndpoint = "/registry/on-search";
+export const onSearchEndpoint = "/ess/on-search";
 
 export const checkEnrollmentEndpoint =
-  "/registry/sync/check-enrollment";
+  "/ess/sync/check-enrollment";
 
 export const txnStatusEndpoint =
-  "/registry/txn/status";
+  "/ess/txn/status";
 
 export const syncStatusEndpoint =
-  "/registry/sync/status";
+  "/ess/sync/status";
 
 export const subscribeEndpoint =
-  "/registry/subscribe";
+  "/ess/subscribe";
 
 export const unsubscribeEndpoint =
-  "/registry/unsubscribe";
+  "/ess/unsubscribe";
 
 export const notifyEndpoint =
-  "/registry/notify";
+  "/ess/notify";
 
 export const onSubscribeEndpoint =
-  "/registry/on-subscribe";
+  "/ess/on-subscribe";
 
 export const onUnsubscribeEndpoint =
-  "/registry/on-unsubscribe";
+  "/ess/on-unsubscribe";
 
 export const onStatusEndpoint =
-  "/registry/on-status";
+  "/ess/on-status";
 
 
 // =========================================

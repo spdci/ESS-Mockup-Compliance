@@ -1,281 +1,50 @@
 <?xml version="1.0"?>
-<testsuite failures="31" skipped="0" name="cucumber-js" time="0.072709713" tests="31">
-  <testcase classname="Enrollment status verification from ESS registry" name="Successfully check enrollment status for active member" time="0">
-    <failure/>
-    <system-out><![CDATA[Given SP system checks enrollment for person "ABC451123"...............undefined
-When A POST request to check enrollment is sent..........................skipped
-Then The response should be received...................................undefined
-And The response status should be 200..................................undefined
-And The response should have "Content-Type": "application/json" head...undefined
-And The response should contain "enrolled_status"......................undefined
-And The enrolled_status should be "Active"...............................skipped
-And The response should be returned within 15000ms.....................undefined]]></system-out>
+<testsuite failures="1" skipped="0" name="cucumber-js" time="0.542146923" tests="5">
+  <testcase classname="Enrollment status verification from ESS registry" name="Successfully check enrollment status for active member" time="0.20960404000000002">
+    <system-out><![CDATA[Given SP system checks enrollment for person "ABC451123"..................passed
+When A POST request to check enrollment is sent...........................passed
+Then The check enrollment response should be received.....................passed
+And The check enrollment response status should be 200....................passed
+And The check enrollment response should have "Content-Type": "applicat...passed
+And The check enrollment response should be returned within 15000ms.......passed
+And The enrolled_status should be "Active"................................passed]]></system-out>
   </testcase>
-  <testcase classname="Enrollment status verification from ESS registry" name="Enrollment check for unknown person" time="0">
-    <failure/>
-    <system-out><![CDATA[Given SP system checks enrollment for unknown identifier...............undefined
-When A POST request to check enrollment is sent..........................skipped
-Then The response should be received...................................undefined
-And The system should return default or inactive status................undefined]]></system-out>
+  <testcase classname="Registry event notification endpoint" name="Successfully receive notification" time="0.07360530900000001">
+    <system-out><![CDATA[Given ESS receives a valid notification event.............................passed
+When A POST request to notify is sent.....................................passed
+Then The notify response should be received...............................passed
+And The notify response status should be 200..............................passed
+And The notify response should have "Content-Type": "application/json" ...passed
+And The notify response should be returned within 15000ms.................passed
+And The notify response ack_status should be "ACK"........................passed]]></system-out>
   </testcase>
-  <testcase classname="Enrollment status verification from ESS registry" name="Enrollment response schema validation" time="0">
-    <failure/>
-    <system-out><![CDATA[Given A valid enrollment check request is sent.........................undefined
-When The response is received..........................................undefined
-Then The response should match the expected JSON schema................undefined]]></system-out>
+  <testcase classname="Async search initiation from ESS registry" name="Successfully initiate async search request" time="0.056353639000000004">
+    <system-out><![CDATA[Given SP system wants to async search for eligible members in ESS.........passed
+When A POST request to async search is sent...............................passed
+Then The response from the async search should be received................passed
+And The async search response should have status 200......................passed
+And The async search response should have "Content-Type": "application/...passed
+And The async search response should be returned within 15000ms...........passed
+And The ack_status should be "ACK"........................................passed]]></system-out>
   </testcase>
-  <testcase classname="Registry event notification endpoint" name="Successfully receive notification" time="0">
-    <failure/>
-    <system-out><![CDATA[Given ESS receives a valid notification event..........................undefined
-When A POST request to notify is sent..................................undefined
-Then The response should be received...................................undefined
-And The response status should be 200..................................undefined
-And The response should contain "ack_status" equal to "ACK"............undefined
-And The response should be returned within 15000ms.....................undefined]]></system-out>
+  <testcase classname="Subscription management for registry events" name="Successfully subscribe to events" time="0.08828255299999999">
+    <failure type="TypeError" message="Cannot read properties of undefined (reading 'ack_status')"><![CDATA[TypeError: Cannot read properties of undefined (reading 'ack_status')
+    at World.<anonymous> (file:///app/features/support/subscribe.js:55:39)]]></failure>
+    <system-out><![CDATA[Given SP system subscribes to ESS events..................................passed
+When A POST request to subscribe is sent..................................passed
+Then The subscribe response should be received............................passed
+And The subscribe response status should be 200...........................passed
+And The subscribe response should have "Content-Type": "application/jso...passed
+And The subscribe response should be returned within 15000ms..............passed
+And The subscribe response ack_status should be "ACK".....................failed]]></system-out>
   </testcase>
-  <testcase classname="Registry event notification endpoint" name="Notification with invalid payload" time="0">
-    <failure/>
-    <system-out><![CDATA[Given ESS receives malformed notification..............................undefined
-When A POST request to notify is sent..................................undefined
-Then The system should handle it gracefully............................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Registry event notification endpoint" name="Notification schema validation" time="0">
-    <failure/>
-    <system-out><![CDATA[Given A valid notification request is sent.............................undefined
-When The response is received..........................................undefined
-Then The response should match the expected JSON schema................undefined]]></system-out>
-  </testcase>
-  <testcase classname="On-search callback receiver for ESS registry" name="Successfully receive on-search callback" time="0">
-    <failure/>
-    <system-out><![CDATA[Given ESS receives a valid search_response callback....................undefined
-When A POST request to on-search is sent.................................skipped
-Then The response should be received...................................undefined
-And The response status should be 200..................................undefined
-And The response should have "Content-Type": "application/json" head...undefined
-And The response should contain "ack_status" equal to "ACK"............undefined
-And The response should include "correlation_id".......................undefined
-And The response should be returned within 15000ms.....................undefined]]></system-out>
-  </testcase>
-  <testcase classname="On-search callback receiver for ESS registry" name="On-search with malformed payload" time="0">
-    <failure/>
-    <system-out><![CDATA[Given ESS receives invalid JSON payload................................undefined
-When A POST request to on-search is sent.................................skipped
-Then The response should still be handled gracefully...................undefined]]></system-out>
-  </testcase>
-  <testcase classname="On-search callback receiver for ESS registry" name="On-search response schema validation" time="0">
-    <failure/>
-    <system-out><![CDATA[Given A valid on-search request is sent................................undefined
-When The response is received..........................................undefined
-Then The response should match the expected JSON schema................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Subscription callback handler for ESS registry" name="Successfully receive subscription confirmation callback" time="0.043766119">
-    <failure type="Error" message="Bad URL protocol: localhost:"><![CDATA[Error: Bad URL protocol: localhost:
-    at useRequest (/app/node_modules/centra/model/CentraRequest.js:31:13)
-    at /app/node_modules/centra/model/CentraRequest.js:197:20
-    at CentraRequest.send (/app/node_modules/centra/model/CentraRequest.js:122:10)
-    at phinx (/app/node_modules/phinx/src/index.js:66:24)
-    at getResponse (/app/node_modules/pactum/src/models/Tosser.js:309:17)
-    at Tosser.setResponse (/app/node_modules/pactum/src/models/Tosser.js:79:27)
-    at Tosser.toss (/app/node_modules/pactum/src/models/Tosser.js:37:18)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)]]></failure>
-    <system-out><![CDATA[Given ESS is ready to receive subscribe callback..........................passed
-When A POST request to on subscribe is sent...............................failed
-Then The response from the async search should be received...............skipped
-And The async search response should have status 200.....................skipped
-And The on subscribe response should be ACK..............................skipped
-And The async search response should be returned in a timely manner wi...skipped
-And The on subscribe response should match the expected JSON schema......skipped]]></system-out>
-  </testcase>
-  <testcase classname="Subscription callback handler for ESS registry" name="On-subscribe with malformed payload" time="0">
-    <failure/>
-    <system-out><![CDATA[Given ESS receives invalid subscription callback.......................undefined
-When A POST request to on subscribe is sent..............................skipped
-Then The response should still be received.............................undefined
-And The system should handle invalid payload gracefully................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Unsubscription callback handler for ESS registry" name="Successfully receive unsubscribe confirmation" time="0.011221509000000001">
-    <failure type="Error" message="Bad URL protocol: localhost:"><![CDATA[Error: Bad URL protocol: localhost:
-    at useRequest (/app/node_modules/centra/model/CentraRequest.js:31:13)
-    at /app/node_modules/centra/model/CentraRequest.js:197:20
-    at CentraRequest.send (/app/node_modules/centra/model/CentraRequest.js:122:10)
-    at phinx (/app/node_modules/phinx/src/index.js:66:24)
-    at getResponse (/app/node_modules/pactum/src/models/Tosser.js:309:17)
-    at Tosser.setResponse (/app/node_modules/pactum/src/models/Tosser.js:79:27)
-    at Tosser.toss (/app/node_modules/pactum/src/models/Tosser.js:37:18)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)]]></failure>
-    <system-out><![CDATA[Given ESS is ready to receive unsubscribe callback........................passed
-When A POST request to on unsubscribe is sent.............................failed
-Then The response should be received...................................undefined
-And The async search response should have status 200.....................skipped
-And The on unsubscribe response should be ACK............................skipped
-And The async search response should be returned in a timely manner wi...skipped
-And The on unsubscribe response should match the expected JSON schema....skipped]]></system-out>
-  </testcase>
-  <testcase classname="Unsubscription callback handler for ESS registry" name="On-unsubscribe with missing fields" time="0">
-    <failure/>
-    <system-out><![CDATA[Given ESS receives invalid unsubscribe callback........................undefined
-When A POST request to on unsubscribe is sent............................skipped
-Then The response should still be received.............................undefined
-And The system should handle invalid payload gracefully................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Async search initiation from ESS registry" name="Successfully initiate async search request" time="0">
-    <failure/>
-    <system-out><![CDATA[Given SP system wants to search for eligible members in ESS............undefined
-When A POST request to async search is sent..............................skipped
-Then The response should be received...................................undefined
-And The response status should be 200..................................undefined
-And The response should have "Content-Type": "application/json" head...undefined
-And The response should contain "ack_status" equal to "ACK"............undefined
-And The response should contain a valid "correlation_id"...............undefined
-And The response should be returned within 15000ms.....................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Async search initiation from ESS registry" name="Async search request with missing transaction_id" time="0">
-    <failure/>
-    <system-out><![CDATA[Given SP system sends search request without transaction_id............undefined
-When A POST request to async search is sent..............................skipped
-Then The response should still be received.............................undefined
-And The response status should be 200..................................undefined
-And The system should handle missing transaction_id gracefully.........undefined]]></system-out>
-  </testcase>
-  <testcase classname="Async search initiation from ESS registry" name="Async search response schema validation" time="0">
-    <failure/>
-    <system-out><![CDATA[Given A valid async search request is sent.............................undefined
-When The response is received..........................................undefined
-Then The response should match the expected JSON schema................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Subscription management for registry events" name="Successfully subscribe to events" time="0">
-    <failure/>
-    <system-out><![CDATA[Given SP system subscribes to ESS events...............................undefined
-When A POST request to subscribe is sent.................................skipped
-Then The response should be received...................................undefined
-And The response status should be 200..................................undefined
-And The response should have "Content-Type": "application/json" head...undefined
-And The response should contain "ack_status" equal to "ACK"............undefined
-And The response should be returned within 15000ms.....................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Subscription management for registry events" name="Subscribe response schema validation" time="0">
-    <failure/>
-    <system-out><![CDATA[Given A valid subscribe request is sent................................undefined
-When The response is received..........................................undefined
-Then The response should match the expected JSON schema................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Synchronous search from ESS registry" name="Successfully perform synchronous search" time="0">
-    <failure/>
-    <system-out><![CDATA[Given SP system requests member data from ESS..........................undefined
-When A POST request to sync search is sent...............................skipped
-Then The response should be received...................................undefined
-And The response status should be 200..................................undefined
-And The response should have "Content-Type": "application/json" head...undefined
-And The response should contain "search_response"......................undefined
-And The response should include at least one "reg_record"..............undefined
-And The response should be returned within 15000ms.....................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Synchronous search from ESS registry" name="Sync search by valid UIN returns member data" time="0">
-    <failure/>
-    <system-out><![CDATA[Given SP system searches using UIN "42343545654".......................undefined
-When A POST request to sync search is sent...............................skipped
-Then The response should contain member "Alice Smith"..................undefined
-And The employment_status should be "employed".........................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Synchronous search from ESS registry" name="Sync search with unknown UIN" time="0">
-    <failure/>
-    <system-out><![CDATA[Given SP system searches using invalid UIN "00000000000"...............undefined
-When A POST request to sync search is sent...............................skipped
-Then The response should be received...................................undefined
-And The response should contain empty or default "reg_records".........undefined]]></system-out>
-  </testcase>
-  <testcase classname="Synchronous search from ESS registry" name="Sync search response schema validation" time="0">
-    <failure/>
-    <system-out><![CDATA[Given A valid sync search request is sent..............................undefined
-When The response is received..........................................undefined
-Then The response should match the expected JSON schema................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Synchronous transaction status check from ESS" name="Successfully retrieve transaction status" time="0.005568589">
-    <failure type="Error" message="Bad URL protocol: localhost:"><![CDATA[Error: Bad URL protocol: localhost:
-    at useRequest (/app/node_modules/centra/model/CentraRequest.js:31:13)
-    at /app/node_modules/centra/model/CentraRequest.js:197:20
-    at CentraRequest.send (/app/node_modules/centra/model/CentraRequest.js:122:10)
-    at phinx (/app/node_modules/phinx/src/index.js:66:24)
-    at getResponse (/app/node_modules/pactum/src/models/Tosser.js:309:17)
-    at Tosser.setResponse (/app/node_modules/pactum/src/models/Tosser.js:79:27)
-    at Tosser.toss (/app/node_modules/pactum/src/models/Tosser.js:37:18)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)]]></failure>
-    <system-out><![CDATA[Given System wants to retrieve transaction status synchronously...........passed
-When A POST request to sync status is sent................................failed
-Then The sync status response should be received.........................skipped
-And The async search response should have status 200.....................skipped
-And The transaction status should be "completed".........................skipped
-And The sync status response should be returned in a timely manner w...undefined
-And The sync status response should match the expected JSON schema.......skipped]]></system-out>
-  </testcase>
-  <testcase classname="Synchronous transaction status check from ESS" name="Sync status with invalid transaction id" time="0">
-    <failure/>
-    <system-out><![CDATA[Given System sends invalid transaction id for status check.............undefined
-When A POST request to sync status is sent...............................skipped
-Then The sync status response should be received.........................skipped
-And The response should handle invalid transaction gracefully..........undefined]]></system-out>
-  </testcase>
-  <testcase classname="Transaction status callback handler for ESS registry" name="Successfully receive transaction status callback" time="0.012153496">
-    <failure type="Error" message="Bad URL protocol: localhost:"><![CDATA[Error: Bad URL protocol: localhost:
-    at useRequest (/app/node_modules/centra/model/CentraRequest.js:31:13)
-    at /app/node_modules/centra/model/CentraRequest.js:197:20
-    at CentraRequest.send (/app/node_modules/centra/model/CentraRequest.js:122:10)
-    at phinx (/app/node_modules/phinx/src/index.js:66:24)
-    at getResponse (/app/node_modules/pactum/src/models/Tosser.js:309:17)
-    at Tosser.setResponse (/app/node_modules/pactum/src/models/Tosser.js:79:27)
-    at Tosser.toss (/app/node_modules/pactum/src/models/Tosser.js:37:18)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)]]></failure>
-    <system-out><![CDATA[Given ESS is ready to receive transaction status callback.................passed
-When A POST request to on status is sent..................................failed
-Then The response should be received...................................undefined
-And The async search response should have status 200.....................skipped
-And The on status response should be ACK...............................undefined
-And The async search response should be returned in a timely manner wi...skipped
-And The on status response should match the expected JSON schema.........skipped]]></system-out>
-  </testcase>
-  <testcase classname="Transaction status callback handler for ESS registry" name="On-status with invalid transaction state" time="0">
-    <failure/>
-    <system-out><![CDATA[Given ESS receives invalid transaction status payload..................undefined
-When A POST request to on status is sent.................................skipped
-Then The response should still be received.............................undefined
-And The system should handle invalid status gracefully.................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Transaction status retrieval from ESS registry" name="Successfully retrieve transaction status" time="0">
-    <failure/>
-    <system-out><![CDATA[Given SP system requests transaction status............................undefined
-When A POST request to transaction status is sent......................undefined
-Then The response should be received...................................undefined
-And The response status should be 200..................................undefined
-And The response should have "Content-Type": "application/json" head...undefined
-And The response should contain "txn_status"...........................undefined
-And The txn_status should be "completed"...............................undefined
-And The response should be returned within 15000ms.....................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Transaction status retrieval from ESS registry" name="Transaction status for invalid transaction_id" time="0">
-    <failure/>
-    <system-out><![CDATA[Given SP system sends invalid transaction_id...........................undefined
-When A POST request to transaction status is sent......................undefined
-Then The response should still be received.............................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Transaction status retrieval from ESS registry" name="Transaction status schema validation" time="0">
-    <failure/>
-    <system-out><![CDATA[Given A valid transaction status request is sent.......................undefined
-When The response is received..........................................undefined
-Then The response should match the expected JSON schema................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Unsubscription from registry events" name="Successfully unsubscribe from events" time="0">
-    <failure/>
-    <system-out><![CDATA[Given SP system unsubscribes from ESS events...........................undefined
-When A POST request to unsubscribe is sent.............................undefined
-Then The response should be received...................................undefined
-And The response status should be 200..................................undefined
-And The response should have "ack_status" equal to "ACK"...............undefined
-And The response should be returned within 15000ms.....................undefined]]></system-out>
-  </testcase>
-  <testcase classname="Unsubscription from registry events" name="Unsubscribe response schema validation" time="0">
-    <failure/>
-    <system-out><![CDATA[Given A valid unsubscribe request is sent..............................undefined
-When The response is received..........................................undefined
-Then The response should match the expected JSON schema................undefined]]></system-out>
+  <testcase classname="Synchronous search from ESS registry" name="Successfully perform synchronous search" time="0.114301382">
+    <system-out><![CDATA[Given SP system requests member data from ESS.............................passed
+When A POST request to sync search is sent................................passed
+Then The response should be received......................................passed
+And The sync search response status should be 200.........................passed
+And The sync search response should have "Content-Type": "application/j...passed
+And The sync search response should be returned within 15000ms............passed
+And The sync search response should match the expected JSON schema........passed]]></system-out>
   </testcase>
 </testsuite>

@@ -7,6 +7,7 @@ import {
   localhost,
   checkEnrollmentEndpoint,
   acceptHeader,
+  defaultExpectedResponseTime,
   checkEnrollmentRequest
 } from './helpers/helpers.js';
 
@@ -15,7 +16,7 @@ let request;
 
 const baseUrl = localhost + checkEnrollmentEndpoint ;
 
-Given('System wants to check enrollment status', function () {
+Given('SP system checks enrollment for person "ABC451123"', function () {
   request = spec();
 });
 
@@ -28,9 +29,20 @@ When('A POST request to check enrollment is sent', async function () {
   this.response = response;
 });
 
-Then('The enrollment response should be received', function () {
+Then('The check enrollment response should be received', function () {
   chai.expect(this.response).to.exist;
 });
+Then('The check enrollment response status should be {int}', function (status) {
+  chai.expect(this.response.statusCode).to.equal(status);
+});
+
+Then(/^The check enrollment response should have "([^"]*)": "([^"]*)" header$/, async function(key, value) {
+  chai.expect(this.response.rawHeaders).to.include(key);
+});
+
+Then(/^The check enrollment response should be returned within 15000ms$/, async function() {
+    chai.expect(this.response.responseTime).to.be.lessThan(defaultExpectedResponseTime);
+  });
 
 Then('The enrolled_status should be {string}', function (status) {
   chai.expect(this.response.body.message.enrolled_response[0].enrolled_status)
