@@ -1,5 +1,20 @@
 FROM node:20-alpine
 
-RUN npm install -g @mockoon/cli@latest
+# Mockoon CLI >= 9 is required (valid_json_schema rules, response callbacks)
+RUN npm install -g @mockoon/cli@9.2.0
 
-WORKDIR /app
+WORKDIR /mocks
+
+# ESS side on 3003, SP-MIS (callback) side on 3004
+COPY mockoon-ess.json mockoon-sp.json entrypoint.sh ./
+
+# Do not run as root
+RUN adduser --shell /bin/sh --disabled-password --gecos "" mockoon \
+ && chown -R mockoon /mocks \
+ && chmod +x /mocks/entrypoint.sh
+
+USER mockoon
+
+EXPOSE 3003 3004
+
+ENTRYPOINT ["/mocks/entrypoint.sh"]

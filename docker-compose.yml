@@ -1,29 +1,20 @@
-version: "3.3"
+version: '3.3'
 
 services:
-
-  ess-mock:
-    image: mockoon-base
+  ess-mocks:
+    image: dci-ess-mocks
     build:
       context: .
+      dockerfile: ./Dockerfile
     ports:
-      - "3003:3003"
-    volumes:
-      - ./mockoon-ess.json:/mockoon-ess.json
-    command: >
-      mockoon-cli start
-      --hostname 0.0.0.0
-      --data /mockoon-ess.json
+      - "3333:3003" # ESS endpoints (search, sync/search, check-enrollment, subscribe, txn/status, notify, ...)
+      - "3334:3004" # SP-MIS callback endpoints (on-search, notify, ...)
+    extra_hosts:
+      # lets the mock call back the test runner's listener (header.sender_uri)
+      - "host.docker.internal:host-gateway"
+    networks:
+      - web
 
-  sp-mock:
-    image: mockoon-base
-    build:
-      context: .
-    ports:
-      - "3004:3004"
-    volumes:
-      - ./mockoon-sp.json:/mockoon-sp.json
-    command: >
-      mockoon-cli start
-      --hostname 0.0.0.0
-      --data /mockoon-sp.json
+networks:
+  web:
+    driver: bridge
