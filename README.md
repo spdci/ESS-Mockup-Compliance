@@ -167,6 +167,17 @@ cd test && npm install && npx cucumber-js
 
 Reports are written to `test/result` (HTML, JUnit XML, Cucumber messages).
 
+### Continuous integration
+
+`.github/workflows/compliance.yml` runs on every push to `main` and every pull request. It
+checks that `mockoon-*.json` are up to date with the test schemas and fixtures, starts the
+mocks, runs the whole suite and reports:
+
+- a pass / fail **ESS compliance** check on the pull request;
+- a per-feature results table, with the failing scenarios, on the run's summary page
+  (written by `test/ci/summary.mjs`);
+- the HTML, JUnit and Cucumber JSON reports as the `ess-compliance-report` artifact.
+
 ### Testing your own implementation
 
 | Variable | Default | Purpose |
