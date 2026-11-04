@@ -2,8 +2,9 @@ name: ESS compliance
 
 # Runs the DCI ESS compliance suite against the bundled Mockoon mocks on every push and pull
 # request: a pass / fail check, a per-feature summary on the run page, and the HTML / JUnit
-# reports as a downloadable artifact. Runs on main also publish the HTML report to GitHub
-# Pages (https://spdci.github.io/ESS-Mockup-Compliance/), passing or not.
+# reports as a downloadable artifact. Runs on main also publish a site to GitHub Pages
+# (https://spdci.github.io/ESS-Mockup-Compliance/), passing or not: a landing page with the results,
+# the HTML report under report/ and a Swagger UI of the ESS API (standard and mock) under api/.
 
 on:
   push:
@@ -87,19 +88,28 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
-      # The github-pages environment only accepts deployments from main.
-      - name: Prepare the Pages site
-        if: ${{ !cancelled() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && hashFiles('test/result/ess_compliance_report.html') != '' }}
-        run: |
-          mkdir -p site
-          cp test/result/ess_compliance_report.html site/index.html
+      # Landing page, report and Swagger UI. Every run attaches it as an artifact (a preview on pull
+      # requests); only main publishes it, the github-pages environment only accepts deployments from main.
+      - name: Build the site
+        if: ${{ !cancelled() && hashFiles('test/result/ess_compliance_report.html') != '' }}
+        run: >
+          node site/build-site.mjs --out "$RUNNER_TEMP/site"
+          --report test/result/ess_compliance_report.html --junit test/result/ess_compliance.xml
+
+      - name: Upload the site (preview)
+        if: ${{ !cancelled() && hashFiles('test/result/ess_compliance_report.html') != '' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ess-compliance-site
+          path: ${{ runner.temp }}/site
+          retention-days: 14
 
       - name: Upload the Pages site
         id: pages
-        if: ${{ !cancelled() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && hashFiles('site/index.html') != '' }}
+        if: ${{ !cancelled() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && hashFiles('test/result/ess_compliance_report.html') != '' }}
         uses: actions/upload-pages-artifact@v5
         with:
-          path: site
+          path: ${{ runner.temp }}/site
 
   publish:
     needs: compliance
@@ -119,4 +129,4 @@ jobs:
 
       - name: Link the report from the job summary
         run: |
-          echo "Latest compliance report of main: ${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Latest compliance report of main: ${{ steps.deployment.outputs.page_url }}report/ (API reference: ${{ steps.deployment.outputs.page_url }}api/)" >> "$GITHUB_STEP_SUMMARY"

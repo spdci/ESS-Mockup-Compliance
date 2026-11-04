@@ -176,9 +176,25 @@ mocks, runs the whole suite and reports:
 - a pass / fail **ESS compliance** check on the pull request;
 - a per-feature results table, with the failing scenarios, on the run's summary page
   (written by `test/ci/summary.mjs`);
-- the HTML, JUnit and Cucumber JSON reports as the `ess-compliance-report` artifact;
-- on `main`, the HTML report of the latest run, published to GitHub Pages:
-  <https://spdci.github.io/ESS-Mockup-Compliance/>.
+- the HTML, JUnit and Cucumber JSON reports as the `ess-compliance-report` artifact, and the
+  site below (results, report, API reference) as the `ess-compliance-site` artifact;
+- on `main`, a GitHub Pages site built by `site/build-site.mjs`:
+  <https://spdci.github.io/ESS-Mockup-Compliance/>, with the results of the latest run, its
+  HTML report (`report/`) and the API reference (`api/`).
+
+### API reference (Swagger UI)
+
+<https://spdci.github.io/ESS-Mockup-Compliance/api/> shows two specs:
+
+- **DCI ESS API v1.0.0 (standard)**: the published spec, `docs/openapi/ess_api_v1.0.0.yaml`;
+- **ESS mock (local, try it out)**: the same API on the mock paths (`/ess/...`),
+  <https://spdci.github.io/ESS-Mockup-Compliance/api/?spec=mock>. Start the mocks locally
+  (`./test_entrypoint.sh`) and use "Try it out": ESS-side endpoints go to port 3333, SP-side
+  ones (on-search, on-subscribe, on-unsubscribe, txn/on-status, notify) to port 3334.
+
+To build the site locally: `node site/build-site.mjs --out /tmp/ess-site --report
+test/result/ess_compliance_report.html --junit test/result/ess_compliance.xml` (after `npm install`
+in `test/`).
 
 ### Testing your own implementation
 
