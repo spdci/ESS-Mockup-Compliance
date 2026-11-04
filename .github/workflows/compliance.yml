@@ -2,7 +2,8 @@ name: ESS compliance
 
 # Runs the DCI ESS compliance suite against the bundled Mockoon mocks on every push and pull
 # request: a pass / fail check, a per-feature summary on the run page, and the HTML / JUnit
-# reports as a downloadable artifact.
+# reports as a downloadable artifact. Runs on main also publish the HTML report to GitHub
+# Pages (https://spdci.github.io/ESS-Mockup-Compliance/), passing or not.
 
 on:
   push:
@@ -13,14 +14,17 @@ on:
 permissions:
   contents: read
 
+# Superseded pull request runs are cancelled; runs on main finish so every report is published.
 concurrency:
   group: compliance-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   compliance:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      pages: ${{ steps.pages.outcome }}
     steps:
       - uses: actions/checkout@v7
 
@@ -82,3 +86,37 @@ jobs:
             mockoon.log
           if-no-files-found: ignore
           retention-days: 30
+
+      # The github-pages environment only accepts deployments from main.
+      - name: Prepare the Pages site
+        if: ${{ !cancelled() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && hashFiles('test/result/ess_compliance_report.html') != '' }}
+        run: |
+          mkdir -p site
+          cp test/result/ess_compliance_report.html site/index.html
+
+      - name: Upload the Pages site
+        id: pages
+        if: ${{ !cancelled() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && hashFiles('site/index.html') != '' }}
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  publish:
+    needs: compliance
+    if: ${{ !cancelled() && needs.compliance.outputs.pages == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy the report to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
+
+      - name: Link the report from the job summary
+        run: |
+          echo "Latest compliance report of main: ${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"

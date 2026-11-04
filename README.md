@@ -176,7 +176,9 @@ mocks, runs the whole suite and reports:
 - a pass / fail **ESS compliance** check on the pull request;
 - a per-feature results table, with the failing scenarios, on the run's summary page
   (written by `test/ci/summary.mjs`);
-- the HTML, JUnit and Cucumber JSON reports as the `ess-compliance-report` artifact.
+- the HTML, JUnit and Cucumber JSON reports as the `ess-compliance-report` artifact;
+- on `main`, the HTML report of the latest run, published to GitHub Pages:
+  <https://spdci.github.io/ESS-Mockup-Compliance/>.
 
 ### Testing your own implementation
 
