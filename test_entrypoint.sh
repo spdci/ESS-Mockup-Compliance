@@ -1,2 +1,2 @@
 chmod u+x entrypoint.sh
-docker-compose up -d --build 
+docker-compose up -d --build ess-mocks
